@@ -2,7 +2,8 @@
 #include <string>
 #include <vector>
 using namespace std;
-constexpr int MAX = 512 * 512;
+constexpr int MAX = 512 * 512 + 1;
+constexpr int CONNECTMAX = MAX * 4;
 constexpr int MAXSIZE = 513;
 
 class Map

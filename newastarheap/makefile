@@ -1,7 +1,7 @@
 astar : AStarAlgorithm.o grid.o map.o heap.o
 	g++ -pg -O3 -o astar AStarAlgorithm.o grid.o map.o heap.o
 
-main.o : AStarAlgorithm.cpp
+AStarAlgorithm.o : AStarAlgorithm.cpp
 	g++ -c AStarAlgorithm.cpp
 grid.o : grid.cpp
 	g++ -c grid.cpp
