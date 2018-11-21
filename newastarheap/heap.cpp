@@ -11,7 +11,7 @@ int Heap::size()
 }
 
 //void Heap::push(int newdata)
-void Heap::push(struct Grid *newgridptr)
+void Heap::push(Grid_t *newgridptr)
 {
     //data[++heapsize] = newdata;
     ptr[++heapsize] = newgridptr;
@@ -22,7 +22,7 @@ void Heap::push(struct Grid *newgridptr)
 void Heap::heapify_up() {
     int now = heapsize;
     //while(data[now] <= data[now/2] && now != 1)
-    while(ptr[now]->cost <= ptr[now/2]->cost && now != 1)
+    while(now != 1 && ptr[now]->cost <= ptr[now/2]->cost)
     {
         // int t = data[now];
         // data[now] = data[now/2];
@@ -73,21 +73,7 @@ void Heap::heapify_down() {
     return;
 }
 
-struct Grid * Heap::top(void)
+Grid_t * Heap::top(void)
 {
     return ptr[1];
 }
-
-// void Heap::Output()
-// {
-//     int level = 2;
-//     for(int i=1; i<=size; i++)
-//     {
-//         cout << data[i] <<' ';
-//         if(i+1 == level)
-//         {
-//             cout << endl;
-//             level*=2;
-//         }
-//     }
-// }
