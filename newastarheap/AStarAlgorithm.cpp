@@ -13,7 +13,7 @@ constexpr int SIZE = 512;
 
 int main(int argc, char *argv[])
 {
-	Map map("maze512-1-0.map");
+	Map map("maze512-1-0");
 	//Map map("testmap.map");
 	//int rows = map.GetRowNum();
 	int cols = map.GetColNum();
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 		free(openlist.top());
 		openlist.pop();
 		closed[current_id] = true;
-		// map.GetConnect(current_id, connections); 
+		// map.GetConnect(current_id, connections);
 		// for (auto iter = connections.begin(); iter != connections.end(); ++iter)
 		// {
 		// 	if (closed[*iter] != 1)
