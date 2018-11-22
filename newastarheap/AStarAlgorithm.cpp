@@ -15,7 +15,8 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row);
 
 int main(int argc, char *argv[])
 {
-	Map map("maze512-1-0.map");
+	Map map("maze512-1-0");
+
 	int start_col = atoi(argv[1]);
 	int start_row = atoi(argv[2]);
 	int dest_col = atoi(argv[3]);
