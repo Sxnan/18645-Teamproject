@@ -27,7 +27,7 @@ void Heap::heapify_up() {
         // int t = data[now];
         // data[now] = data[now/2];
         // data[now/2] = t;
-        auto t = ptr[now];
+        Grid_t *t = ptr[now];
         ptr[now] = ptr[now/2];
         ptr[now / 2] = t;
         now = now / 2;
@@ -53,17 +53,9 @@ void Heap::heapify_down() {
         child = 2 * father;
         //if(child + 1 <= heapsize && data[child+1] < data[child]) child++;
         if(child + 1 <= heapsize && ptr[child+1]->cost < ptr[child]->cost) child++;
-        // if(data[father] > data[child])
-        // {
-        //     int t = data[father];
-        //     data[father] = data[child];
-        //     data[child] = t;
-        //     father = child;
-        //     child = father * 2;
-        // }
         if(ptr[father]->cost > ptr[child]->cost)
         {
-            auto t = ptr[father];
+            Grid_t *t = ptr[father];
             ptr[father] = ptr[child];
             ptr[child] = t;
             father = child;
