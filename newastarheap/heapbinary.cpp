@@ -1,5 +1,4 @@
 #include "heap.h"
-#include <immintrin.h>
 
 Heap::Heap(void)
 {
@@ -12,7 +11,7 @@ int Heap::size()
 }
 
 //void Heap::push(int newdata)
-void Heap::push(Grid_t *newgridptr)
+void Heap::push(struct Grid *newgridptr)
 {
     //data[++heapsize] = newdata;
     ptr[++heapsize] = newgridptr;
@@ -23,15 +22,15 @@ void Heap::push(Grid_t *newgridptr)
 void Heap::heapify_up() {
     int now = heapsize;
     //while(data[now] <= data[now/2] && now != 1)
-    while(now != 1 && ptr[now]->cost <= ptr[(now + child_node_num - 2) / child_node_num]->cost)
+    while(ptr[now]->cost <= ptr[now/2]->cost && now != 1)
     {
         // int t = data[now];
         // data[now] = data[now/2];
         // data[now/2] = t;
         auto t = ptr[now];
-        ptr[now] = ptr[(now + child_node_num - 2) / child_node_num];
-        ptr[(now + child_node_num - 2) / child_node_num] = t;
-        now = (now + child_node_num - 2) / child_node_num;
+        ptr[now] = ptr[now/2];
+        ptr[now / 2] = t;
+        now = now / 2;
     }
     return;
 }
@@ -49,22 +48,22 @@ void Heap::pop()
 
 void Heap::heapify_down() {
     int father = 1, child;
-    while(father * child_node_num - (child_node_num - 2) <= heapsize)
+    while(father * 2 <= heapsize)
     {
-        child = father * child_node_num - (child_node_num - 2);
-        int min_child = 100000, min_child_id = -1;
-        for (int i = 0; i < child_node_num; i++)
-        {
-            if(child + i <= heapsize && ptr[child + i]->cost < min_child)
-            {
-                min_child = ptr[child + i]->cost;
-                min_child_id = i;
-            }
-        }
-        child += min_child_id;
+        child = 2 * father;
+        //if(child + 1 <= heapsize && data[child+1] < data[child]) child++;
+        if(child + 1 <= heapsize && ptr[child+1]->cost < ptr[child]->cost) child++;
+        // if(data[father] > data[child])
+        // {
+        //     int t = data[father];
+        //     data[father] = data[child];
+        //     data[child] = t;
+        //     father = child;
+        //     child = father * 2;
+        // }
         if(ptr[father]->cost > ptr[child]->cost)
         {
-            Grid_t *t = ptr[father];
+            auto t = ptr[father];
             ptr[father] = ptr[child];
             ptr[child] = t;
             father = child;
@@ -74,7 +73,21 @@ void Heap::heapify_down() {
     return;
 }
 
-Grid_t * Heap::top(void)
+struct Grid * Heap::top(void)
 {
     return ptr[1];
 }
+
+// void Heap::Output()
+// {
+//     int level = 2;
+//     for(int i=1; i<=size; i++)
+//     {
+//         cout << data[i] <<' ';
+//         if(i+1 == level)
+//         {
+//             cout << endl;
+//             level*=2;
+//         }
+//     }
+// }
