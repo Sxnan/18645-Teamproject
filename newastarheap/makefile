@@ -1,14 +1,14 @@
 astar : AStarAlgorithm.o grid.o map.o heap.o
-	g++ -pg -O3 -o astar AStarAlgorithm.o grid.o map.o heap.o
+	g++ -O3 -o astar AStarAlgorithm.o grid.o map.o heap.o -fopenmp
 
 AStarAlgorithm.o : AStarAlgorithm.cpp
-	g++ -c AStarAlgorithm.cpp
+	g++ -O3 -c AStarAlgorithm.cpp -fopenmp
 grid.o : grid.cpp
-	g++ -c grid.cpp
+	g++ -O3 -c grid.cpp -fopenmp
 map.o : map.cpp
-	g++ -c map.cpp
+	g++ -c map.cpp -fopenmp
 heap.o : heap.cpp
-	g++ -c heap.cpp
+	g++ -O3 -c heap.cpp -fopenmp
 
 clean :
 	rm astar AStarAlgorithm.o grid.o map.o heap.o
