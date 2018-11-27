@@ -9,7 +9,8 @@ private:
     int heapsize;
     void heapify_up();
     void heapify_down();
-    int child_node_num = 4;
+    int child_node_num = 8;
+    int offset = 6;
 
 public:
     Heap(void);

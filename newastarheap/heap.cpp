@@ -23,15 +23,15 @@ void Heap::push(Grid_t *newgridptr)
 void Heap::heapify_up() {
     int now = heapsize;
     //while(data[now] <= data[now/2] && now != 1)
-    while(now != 1 && ptr[now]->cost <= ptr[(now + child_node_num - 2) / child_node_num]->cost)
+    while(now != 1 && ptr[now]->cost <= ptr[(now + offset) / child_node_num]->cost)
     {
         // int t = data[now];
         // data[now] = data[now/2];
         // data[now/2] = t;
         auto t = ptr[now];
-        ptr[now] = ptr[(now + child_node_num - 2) / child_node_num];
-        ptr[(now + child_node_num - 2) / child_node_num] = t;
-        now = (now + child_node_num - 2) / child_node_num;
+        ptr[now] = ptr[(now + offset) / child_node_num];
+        ptr[(now + offset) / child_node_num] = t;
+        now = (now + offset) / child_node_num;
     }
     return;
 }
@@ -49,19 +49,59 @@ void Heap::pop()
 
 void Heap::heapify_down() {
     int father = 1, child;
-    while(father * child_node_num - (child_node_num - 2) <= heapsize)
+    while(father * child_node_num - (offset) <= heapsize)
     {
-        child = father * child_node_num - (child_node_num - 2);
+        child = father * child_node_num - (offset);
         int min_child = 100000, min_child_id = -1;
-        for (int i = 0; i < child_node_num; i++)
+        if(child <= heapsize && ptr[child]->cost < min_child)
         {
-            if(child + i <= heapsize && ptr[child + i]->cost < min_child)
-            {
-                min_child = ptr[child + i]->cost;
-                min_child_id = i;
-            }
+            min_child = ptr[child]->cost;
+            min_child_id = child++;
         }
-        child += min_child_id;
+        if(child <= heapsize && ptr[child]->cost < min_child)
+        {
+            min_child = ptr[child]->cost;
+            min_child_id = child++;
+        }
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //if(child <= heapsize && ptr[child]->cost < min_child)
+        //{
+        //    min_child = ptr[child]->cost;
+        //    min_child_id = child++;
+        //}
+        //for (int i = 0; i < child_node_num; i++)
+        //{
+        //    if(child + i <= heapsize && ptr[child + i]->cost < min_child)
+        //    {
+        //        min_child = ptr[child + i]->cost;
+        //        min_child_id = i;
+        //    }
+        //}
+        child = min_child_id;
         if(ptr[father]->cost > ptr[child]->cost)
         {
             Grid_t *t = ptr[father];
