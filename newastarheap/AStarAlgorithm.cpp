@@ -1,6 +1,7 @@
 #include "grid.h" 
-#include "map.h"
+#include "map.h" 
 #include "heap.h"
+#include "utils.hpp"
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -9,8 +10,23 @@
 #include <cstring>
 #include <vector>
 #include <omp.h>
+
+#define _BENCHMARK_LOAD_PER_PUSH
+#define _BENCHMARK_STORE_PER_PUSH
+#define _BENCHMARK_LOAD_PER_POP
+#define _BENCHMARK_STORE_PER_POP
+
+#define _BENCHMARK
+
+typedef unsigned long long ull;
+
 using namespace std;
 constexpr int SIZE = 512;
+
+size_t pop_cnt = 0;
+size_t push_cnt = 0;
+ull pop_clk = 0;
+ull push_clk = 0;
 
 #define abs(x) ((x)>=0?(x):-(x))
 #define max(x, y) ((x)>(y)?(x):(y))
@@ -24,17 +40,13 @@ typedef struct TestCase {
 } TestCase_t;
 
 int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row);
-void expand(int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row);
+void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row);
 
 int main(int argc, char *argv[])
 {
-	Map map("maze512-1-0");
+	Map map("./maze512-1-0");
     vector<TestCase_t> testcases;
 
-	//int start_col = atoi(argv[1]);
-	//int start_row = atoi(argv[2]);
-	//int dest_col = atoi(argv[3]);
-	//int dest_row = atoi(argv[4]);
     ifstream ifs("./maze512-1-0.map.scen");
     string ignore;
     int start_col, start_row, dest_col, dest_row, length;
@@ -54,11 +66,17 @@ int main(int argc, char *argv[])
     for (unsigned long i = 0; i < testcases.size(); ++i) {
         TestCase_t testcase = testcases[i];
         int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
+        //printf("%lu: %d\n", i, shortestlength);
         if (shortestlength != testcase.length){
             printf("fail\n");
             exit(1);
         }
     }
+
+#ifdef _BENCHMARK
+    printf("pop cnt: %lu pop clock %llu\n", pop_cnt, pop_clk);
+    printf("push cnt: %lu push clock %llu\n", push_cnt, push_clk);
+#endif
 
 
 	return 0;
@@ -85,16 +103,25 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 	start_ptr->cost = 0;
 	start_ptr->prev_length = 0;
 
+#ifdef _BENCHMARK
+    push_cnt++;
+    ull t0 = rdtsc();
 	openlist.push(start_ptr);
+    push_clk += rdtsc() - t0;
+#else
+	openlist.push(start_ptr);
+#endif
 
 	while (true)
 	{
+        //printf("ha\n");
 		if (openlist.size() == 0)
 		{
-			//cout << "Empty openlist! " << endl;
+			cout << "Empty openlist! " << endl;
             return -1;
 		}
 		int current_id = openlist.top()->id;
+        //printf("current id %d\n", current_id);
 		if (current_id == dest_id)
 		{
 			//cout << "Shortest Pathlength : " << openlist.top()->prev_length << endl;
@@ -102,16 +129,30 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			while (openlist.size() != 0)
 			{
 				free(openlist.top());
+#ifdef _BENCHMARK
+                pop_cnt++;
+                ull t0 = rdtsc();
+                openlist.pop();
+                pop_clk += rdtsc() - t0;
+#else
 				openlist.pop();
+#endif
 			}
 			break;
 		}
 		int current_length = openlist.top()->prev_length;
 		free(openlist.top());
+#ifdef _BENCHMARK
+        pop_cnt++;
+        ull t0 = rdtsc();
+        openlist.pop();
+        pop_clk += rdtsc() - t0;
+#else
 		openlist.pop();
+#endif
 		closed[current_id] = true;
 
-        expand(current_id, indexptr, connectptr, closed, current_length, &openlist, cols, dest_col, dest_row);
+        expand(&map, current_id, indexptr, connectptr, closed, current_length, &openlist, cols, dest_col, dest_row);
 		//for (int iter = indexptr[current_id]; iter < indexptr[current_id + 1]; ++iter) //TODO: SIMD
 		//{
 		//	if (closed[connectptr[iter]] != 1)
@@ -130,7 +171,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
     return shortestlength;
 }
 
-__attribute__((noinline)) void expand(int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row) {
+void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row) {
     for (int iter = indexptr[current_id]; iter < indexptr[current_id + 1]; ++iter) //TODO: SIMD
     {
         if (closed[connectptr[iter]] != 1)
@@ -140,8 +181,16 @@ __attribute__((noinline)) void expand(int current_id, int *indexptr, int *connec
             grid_ptr->id = connectptr[iter];
             grid_ptr->prev_length = current_length + 1;
             grid_ptr->cost = current_length + 1 + manh_dis;
-            //map.RecordPath(current_id, grid_ptr->id);
+            map->RecordPath(current_id, grid_ptr->id);
+
+#ifdef _BENCHMARK
+            push_cnt++;
+            ull t0 = rdtsc();
             openlist->push(grid_ptr);
+            push_clk += rdtsc() - t0;
+#else
+            openlist->push(grid_ptr);
+#endif
         }
     }
 }

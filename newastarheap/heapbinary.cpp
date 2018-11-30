@@ -22,7 +22,7 @@ void Heap::push(struct Grid *newgridptr)
 void Heap::heapify_up() {
     int now = heapsize;
     //while(data[now] <= data[now/2] && now != 1)
-    while(ptr[now]->cost <= ptr[now/2]->cost && now != 1)
+    while(now != 1 && ptr[now]->cost <= ptr[now/2]->cost)
     {
         // int t = data[now];
         // data[now] = data[now/2];

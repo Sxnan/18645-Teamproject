@@ -1,5 +1,6 @@
 #include "grid.h"
-constexpr int MAXHEAPSIZE = 512;
+constexpr int MAXHEAPSIZE = 512 * 512;
+;
 
 class Heap
 {

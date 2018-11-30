@@ -1,16 +1,22 @@
-astar : AStarAlgorithm.o grid.o map.o heap.o
-	g++ -O3 -o astar AStarAlgorithm.o grid.o map.o heap.o -fopenmp
+CXXFLAGS=-O3 -g
+
+all: astar_binary astar
+
+astar_binary: AStarAlgorithm.o grid.o map.o heapbinary.o
+	g++ $(CXXFLAGS) -o $@ $^
+
+astar: AStarAlgorithm.o grid.o map.o heap.o
+	g++ $(CXXFLAGS) -o $@ $^
 
 AStarAlgorithm.o : AStarAlgorithm.cpp
-	g++ -O3 -c AStarAlgorithm.cpp -fopenmp
 grid.o : grid.cpp
-	g++ -O3 -c grid.cpp -fopenmp
-map.o : map.cpp
-	g++ -c map.cpp -fopenmp
 heap.o : heap.cpp
-	g++ -O3 -c heap.cpp -fopenmp
+heapbinary.o: heapbinary.cpp
+
+map.o : map.cpp
+	g++ -c -o $@ $^
 
 clean :
-	rm astar AStarAlgorithm.o grid.o map.o heap.o
+	rm astar_binary astar AStarAlgorithm.o grid.o map.o heap.o heapbinary.o
 
-.PHONY: astar clean
+.PHONY: all clean
