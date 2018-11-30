@@ -22,5 +22,3 @@ public:
     //int GetData(int index);
     //void Output();
 };
-
-int find_min_child(Heap *t, int child);

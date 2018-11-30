@@ -141,6 +141,7 @@ int Heap::find_min_child(int child)
         min_child = cost7;
         min_child_id = 7;
     }
+
     return min_child_id;
 }
 

@@ -49,6 +49,46 @@ extern int find_cnt;
     push_pop1024\
     push_pop1024
 
+#define push_pop \
+    openlist.push(&grid[1]); \
+    openlist.pop();
+
+#define push_pop4 \
+    push_pop \
+    push_pop \
+    push_pop \
+    push_pop 
+
+#define push_pop16 \
+    push_pop4\
+    push_pop4\
+    push_pop4\
+    push_pop4
+
+#define push_pop64 \
+    push_pop16\
+    push_pop16\
+    push_pop16\
+    push_pop16
+
+#define push_pop256 \
+    push_pop64\
+    push_pop64\
+    push_pop64\
+    push_pop64
+
+#define push_pop1024 \
+    push_pop256\
+    push_pop256\
+    push_pop256\
+    push_pop256
+
+#define push_pop4096 \
+    push_pop1024\
+    push_pop1024\
+    push_pop1024\
+    push_pop1024
+
 void init_grids(struct Grid *grid_list)
 {
     for (int i = 0; i < GRID_NUM; i++)
@@ -86,6 +126,7 @@ int main()
     int push_store = up_swap_cnt * 2 + push_cnt * 1;
     int pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 16;
     int pop_store = down_swap_cnt * 2 + pop_cnt * 1;
+
     cout << "Push Load: " << push_load << endl;
     cout << "Push Store: " << push_store << endl;
     cout << "Pop Load: " << pop_load << endl;
