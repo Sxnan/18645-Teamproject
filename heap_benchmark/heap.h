@@ -9,7 +9,8 @@ private:
     int heapsize;
     void heapify_up();
     void heapify_down();
-    int child_node_num = 16;
+    int child_node_num = 8;
+    int find_min_child(int child);
 
 public:
     Heap(void);
@@ -18,9 +19,8 @@ public:
     void push(struct Grid *newgridptr);
     void pop();
     struct Grid* top(void);
-    friend int find_min_child(Heap *t, int child, int child_node_num);
     //int GetData(int index);
     //void Output();
 };
 
-int find_min_child(Heap *t, int child, int child_node_num);
+int find_min_child(Heap *t, int child);
