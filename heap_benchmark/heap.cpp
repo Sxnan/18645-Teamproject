@@ -61,24 +61,66 @@ void Heap::pop()
     return;
 }
 
-int find_min_child(Heap *t, int child, int child_node_num)
+int Heap::find_min_child(int child)
 {
     find_min++;
-    int min_child = 100000, min_child_id = -1;
-    for (int i = 0; i < child_node_num; i++)
+    //int min_child = 100000, min_child_id = -1;
+    //for (int i = 0; i < child_node_num; i++)
+    //{
+    //    find_min_loop++;
+    //    if(child + i <= heapsize)
+    //    {
+    //        find_min_cond_1++;
+    //        if(ptr[child + i]->cost < min_child)
+    //        {
+    //            find_min_cond_2++;
+    //            min_child = ptr[child + i]->cost;
+    //            min_child_id = i;
+    //        }
+    //    }
+    //}
+    int min_child, min_child_id;
+    if(child <= heapsize)
     {
-        find_min_loop++;
-        if(child + i <= t->heapsize)
-        {
-            find_min_cond_1++;
-            if(t->ptr[child + i]->cost < min_child)
-            {
-                find_min_cond_2++;
-                min_child = t->ptr[child + i]->cost;
-                min_child_id = i;
-            }
-        }
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
     }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+    if(child <= heapsize && ptr[child]->cost < min_child)
+    {
+        min_child = ptr[child]->cost;
+        min_child_id = child++;
+    }
+
     return min_child_id;
 }
 
@@ -89,7 +131,7 @@ void Heap::heapify_down() {
     {
         h_down_loop++;
         child = father * child_node_num - (child_node_num - 2);
-        child += find_min_child(this, child, child_node_num);
+        child += find_min_child(child);
         if(ptr[father]->cost > ptr[child]->cost)
         {
             // auto t = ptr[father];
