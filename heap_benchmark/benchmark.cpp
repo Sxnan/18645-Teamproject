@@ -109,4 +109,3 @@ int main()
     cout << "Store Throughput: " << max_st_thru << endl;
     return 0;
 }
-

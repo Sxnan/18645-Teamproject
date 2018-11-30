@@ -37,32 +37,24 @@ Map::Map(std::string filename)
 					//connect.push_back((i - 1) * cols + j);
 					//current_index++;
 					connect[current_index++] = (i - 1) * cols + j;
-					if (i == 1 && j == 1)
-						cout << "up " << (i - 1) * cols + j << " index " << current_index-1 << endl;
 				}
 				if ((i + 1 < rows) && (*(raw_map + i + 1))[j] == '.')    //Lower
 				{
 					//connect.push_back((i + 1) * cols + j);
 					//current_index++;
 					connect[current_index++] = (i + 1) * cols + j;
-					if (i == 1 && j == 1)
-						cout << "down " << (i + 1) * cols + j << " index " << current_index-1 << endl;
 				}
 				if ((j - 1 >= 0) && (*(raw_map + i))[j - 1] == '.')    //Left
 				{
 					//connect.push_back(i * cols + j - 1);
 					//current_index++;
 					connect[current_index++] = i * cols + j - 1;
-					if (i == 1 && j == 1)
-						cout << "left " << i * cols + j - 1 << " index " << current_index-1 << endl;
 				}
 				if ((j + 1 < cols) && (*(raw_map + i))[j + 1] == '.')    //Right
 				{
 					//connect.push_back(i * cols + j + 1);
 					//current_index++;
 					connect[current_index++] = i * cols + j + 1;
-					if (i == 1 && j == 1)
-						cout << "right " << i * cols + j + 1 << " index " << current_index-1 << endl;
 				}
 			}
 		}
@@ -142,7 +134,7 @@ void Map::PrintPath(int startid, int currid)
 	else
 	{
 		PrintPath(startid, path[currid]);
-		cout << currid << endl;
+		//cout << currid << endl;
 		cout << '(' << currid / cols << " , " << currid % cols << ')' << endl;
 		pathpoints[currid] = 1;
 	}
