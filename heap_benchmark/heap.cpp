@@ -45,8 +45,8 @@ void Heap::heapify_up() {
     while(now != 1)
     {
         h_up_loop_cnt++;
-        struct Grid **now_dptr = &ptr[now];
-        struct Grid **up_dptr = &ptr[(now + child_node_num - 2) / child_node_num];
+        struct Grid **now_dptr = ptr + now;
+        struct Grid **up_dptr = ptr + (now + child_node_num - 2) / child_node_num;
         struct Grid *now_ptr = *now_dptr;
         struct Grid *up_ptr = *up_dptr;
         int now_cost = now_ptr->cost;
@@ -152,8 +152,8 @@ void Heap::heapify_down() {
         h_down_loop_cnt++;
         child = father * child_node_num - (child_node_num - 2);
         child += find_min_child(child);
-        struct Grid **father_dptr = &ptr[father];
-        struct Grid **child_dptr = &ptr[father];
+        struct Grid **father_dptr = ptr + father;
+        struct Grid **child_dptr = ptr + father;
         struct Grid *father_ptr = *father_dptr;
         struct Grid *child_ptr = *child_dptr;
         int father_cost = father_ptr->cost;
