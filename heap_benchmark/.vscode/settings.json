@@ -4,6 +4,8 @@
         "throughput.h": "c",
         "rdtsc.h": "c",
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "latency.h": "c",
+        "asm.h": "c"
     }
 }

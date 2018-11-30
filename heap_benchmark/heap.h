@@ -9,7 +9,7 @@ private:
     int heapsize;
     void heapify_up();
     void heapify_down();
-    int child_node_num = 16;
+    int child_node_num = 8;
     int find_min_child(int child);
 
 public:

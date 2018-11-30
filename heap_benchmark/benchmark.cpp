@@ -4,9 +4,50 @@
 #define GRID_NUM 400
 using namespace std;
 
-extern int h_up, h_up_loop, h_up_loop_plus, h_up_swap;
-extern int h_down, h_down_loop, h_down_cond, h_down_swap;
-extern int find_min, find_min_loop, find_min_cond_1, find_min_cond_2;
+extern int up_swap_cnt, down_swap_cnt;
+extern int push_cnt, pop_cnt;
+extern int h_up_loop_cnt, h_down_loop_cnt;
+extern int find_cnt;
+
+#define push_pop \
+    openlist.push(&grid[1]); \
+    openlist.pop();
+
+#define push_pop4 \
+    push_pop \
+    push_pop \
+    push_pop \
+    push_pop 
+
+#define push_pop16 \
+    push_pop4\
+    push_pop4\
+    push_pop4\
+    push_pop4
+
+#define push_pop64 \
+    push_pop16\
+    push_pop16\
+    push_pop16\
+    push_pop16
+
+#define push_pop256 \
+    push_pop64\
+    push_pop64\
+    push_pop64\
+    push_pop64
+
+#define push_pop1024 \
+    push_pop256\
+    push_pop256\
+    push_pop256\
+    push_pop256
+
+#define push_pop4096 \
+    push_pop1024\
+    push_pop1024\
+    push_pop1024\
+    push_pop1024
 
 #define push_pop \
     openlist.push(&grid[1]); \
@@ -71,16 +112,21 @@ int main()
 
     st = rdtsc();
 
-    push_pop1024
+    push_pop4096
 
     et = rdtsc();
 
     cout << "Cycle: " << et-st << endl;
 
-    int push_load = h_up * (7 + 2) + h_up_loop * (13 + 12) + h_up_loop_plus * 12 + h_up_swap * 2;
-    int push_store = h_up * (4 + 2) + h_up_loop * (2 + 0) + h_up_loop_plus * 0 + h_up_swap * 2;
-    int pop_load = h_down * (7 + 6) + h_down_loop * 16 + h_down_cond * 5 + h_down_swap * 2 + find_min * 1 + find_min_loop * 4 + find_min_cond_1 * 5 + find_min_cond_2 * 6;
-    int pop_store = h_down * (3 + 6) + h_down_loop * 1 + h_down_cond * 1 + h_down_swap * 2 + find_min * 6 + find_min_loop * 0 + find_min_cond_1 * 0 + find_min_cond_2 * 2;
+    // int push_load = h_up * (7 + 2) + h_up_loop * (13 + 12) + h_up_loop_plus * 12 + h_up_swap * 7;
+    // int push_store = h_up * (4 + 2) + h_up_loop * (2 + 0) + h_up_loop_plus * 0 + h_up_swap * 15;
+    // int pop_load = h_down * (7 + 6) + h_down_loop * 16 + h_down_cond * 5 + h_down_swap * 7 + find_min * 1 + find_min_loop * 4 + find_min_cond_1 * 5 + find_min_cond_2 * 6;
+    // int pop_store = h_down * (3 + 6) + h_down_loop * 1 + h_down_cond * 1 + h_down_swap * 15 + find_min * 6 + find_min_loop * 0 + find_min_cond_1 * 0 + find_min_cond_2 * 2;
+    int push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 6;
+    int push_store = up_swap_cnt * 2 + push_cnt * 1;
+    int pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 16;
+    int pop_store = down_swap_cnt * 2 + pop_cnt * 1;
+
     cout << "Push Load: " << push_load << endl;
     cout << "Push Store: " << push_store << endl;
     cout << "Pop Load: " << pop_load << endl;
