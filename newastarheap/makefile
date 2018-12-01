@@ -1,4 +1,4 @@
-CXXFLAGS=-O3
+CXXFLAGS=-O3 -g
 
 all: astar astar_small astar_binary
 

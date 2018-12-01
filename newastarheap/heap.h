@@ -1,5 +1,5 @@
 #include "grid.h"
-constexpr int MAXHEAPSIZE = 300;
+constexpr int MAXHEAPSIZE = 500;
 
 class Heap
 {
@@ -20,7 +20,7 @@ public:
     void push(struct Grid *newgridptr);
     void pop();
     Grid_t* top(void);
-    ~Heap(void);
+    //~Heap(void);
     //int GetData(int index);
     //void Output();
 };

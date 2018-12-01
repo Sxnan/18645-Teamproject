@@ -3,7 +3,7 @@
 #include <immintrin.h> 
 #include "mem_manager.h"
 
-extern DoubleMemManager mem;
+//extern DoubleMemManager mem;
 
 //int upcounter = 0, upcounteradd = 0, downcounter = 0, upswap = 0, downswap = 0, findminloop = 0, if_1 = 0, if_2 = 0;
 
@@ -27,7 +27,7 @@ void swap(struct Grid **p1, struct Grid **p2)
 Heap::Heap(void)
 {
     heapsize = 0;
-    //ptr = (Grid_t **)mem.mem_alloc(HEAP, 300);
+    //ptr = (Grid_t **)mem.mem_alloc(HEAP, MAXHEAPSIZE);
 }
 
 int Heap::size()
@@ -178,7 +178,7 @@ struct Grid * Heap::top(void)
     return ptr[1];
 }
 
-Heap::~Heap(void)
-{
-    mem.mem_clear(HEAP);
-}
+// Heap::~Heap(void)
+// {
+//     //mem.mem_clear(HEAP);
+// }
