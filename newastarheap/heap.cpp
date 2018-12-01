@@ -1,9 +1,13 @@
 #include "heap.h"
 #include <immintrin.h> 
+#include "mem_manager.h"
+
+extern DoubleMemManager mem;
 
 Heap::Heap(void)
 {
     heapsize = 0;
+    ptr = (Grid_t **)mem.mem_alloc(HEAP, 300);
 }
 
 int Heap::size()
@@ -109,4 +113,9 @@ void Heap::heapify_down() {
 Grid_t * Heap::top(void)
 {
     return ptr[1];
+}
+
+Heap::~Heap(void)
+{
+    mem.mem_clear(HEAP);
 }

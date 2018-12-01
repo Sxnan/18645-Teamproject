@@ -1,12 +1,12 @@
 #include "grid.h"
-constexpr int MAXHEAPSIZE = 512 * 512;
-;
+constexpr int MAXHEAPSIZE = 300;
 
 class Heap
 {
 private:
     //int data[MAXHEAPSIZE];
-    Grid_t *ptr[MAXHEAPSIZE];
+    //Grid_t *ptr[MAXHEAPSIZE];
+    Grid_t **ptr;
     int heapsize;
     void heapify_up();
     void heapify_down();
@@ -20,6 +20,7 @@ public:
     void push(Grid_t *newgridptr);
     void pop();
     Grid_t* top(void);
+    ~Heap(void);
     //int GetData(int index);
     //void Output();
 };
