@@ -11,11 +11,6 @@
 #include <vector>
 #include <omp.h>
 
-#define _BENCHMARK_LOAD_PER_PUSH
-#define _BENCHMARK_STORE_PER_PUSH
-#define _BENCHMARK_LOAD_PER_POP
-#define _BENCHMARK_STORE_PER_POP
-
 #define _BENCHMARK
 
 extern size_t up_swap_cnt, down_swap_cnt;
@@ -26,7 +21,7 @@ extern size_t find_cnt;
 typedef unsigned long long ull;
 
 using namespace std;
-constexpr int SIZE = 512;
+constexpr int SIZE = 20;
 
 ull pop_clk = 0;
 ull push_clk = 0;
@@ -47,10 +42,10 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
 
 int main(int argc, char *argv[])
 {
-	Map map("./maze512-1-0");
+	Map map("small");
     vector<TestCase_t> testcases;
 
-    ifstream ifs("./maze512-1-0.map.scen");
+    ifstream ifs("./small.scen");
     string ignore;
     int start_col, start_row, dest_col, dest_row, length;
     ifs >> ignore >> ignore;
@@ -65,14 +60,16 @@ int main(int argc, char *argv[])
         testcases.push_back(testcase);
     }
 
+    int round = 1 << 21;
     //#pragma omp parallel for
     for (unsigned long i = 0; i < testcases.size(); ++i) {
         TestCase_t testcase = testcases[i];
-        int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
-        //printf("%lu: %d\n", i, shortestlength);
+        int shortestlength;
+        for (int j = 0; j < round; ++j)
+            shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
         if (shortestlength != testcase.length){
             printf("fail\n");
-            exit(1);
+            //exit(1);
         }
     }
 

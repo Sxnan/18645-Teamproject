@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     size_t push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 6;
     size_t push_store = up_swap_cnt * 2 + push_cnt * 1;
-    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 16;
+    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 4;
     size_t pop_store = down_swap_cnt * 2 + pop_cnt * 1;
     //cout << "Push Load: " << push_load << endl;
     //cout << "Push Store: " << push_store << endl;
