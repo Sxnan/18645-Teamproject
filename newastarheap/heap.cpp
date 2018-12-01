@@ -15,6 +15,7 @@ size_t up_swap_cnt = 0, down_swap_cnt = 0;
 size_t push_cnt = 0, pop_cnt = 0;
 size_t h_up_loop_cnt = 0, h_down_loop_cnt = 0;
 size_t find_cnt = 0;
+size_t find_min_switch_cnt = 0;
 
 void swap(struct Grid **p1, struct Grid **p2)
 {
@@ -98,6 +99,7 @@ int Heap::find_min_child(int child)
     c7 = ptr[child + 7];
 
     int tmp = heapsize - child > 7 ? 7: heapsize - child;
+    find_min_switch_cnt += tmp + 1;
 
     switch(tmp) {
         case 7:
