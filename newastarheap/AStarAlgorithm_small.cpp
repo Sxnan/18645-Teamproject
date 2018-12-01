@@ -2,7 +2,6 @@
 #include "map.h" 
 #include "heap.h"
 #include "utils.hpp"
-#include "mem_manager.h"
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -11,11 +10,6 @@
 #include <cstring>
 #include <vector>
 #include <omp.h>
-
-#define _BENCHMARK_LOAD_PER_PUSH
-#define _BENCHMARK_STORE_PER_PUSH
-#define _BENCHMARK_LOAD_PER_POP
-#define _BENCHMARK_STORE_PER_POP
 
 #define _BENCHMARK
 
@@ -27,7 +21,7 @@ extern size_t find_cnt;
 typedef unsigned long long ull;
 
 using namespace std;
-constexpr int SIZE = 512;
+constexpr int SIZE = 20;
 
 ull pop_clk = 0;
 ull push_clk = 0;
@@ -43,19 +37,15 @@ typedef struct TestCase {
     int length;
 } TestCase_t;
 
-DoubleMemManager mem(sizeof(Grid_t), 4096 / sizeof(Grid_t) + 1, sizeof(Grid_t *), 4096 / sizeof(Grid_t *) - 1);
-
 int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row);
 void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row);
 
 int main(int argc, char *argv[])
 {
-    mem.mem_clear(HEAP);
-    mem.mem_clear(GRID);
-	Map map("./maze512-1-0");
+	Map map("small");
     vector<TestCase_t> testcases;
 
-    ifstream ifs("./maze512-1-0.map.scen");
+    ifstream ifs("./small.scen");
     string ignore;
     int start_col, start_row, dest_col, dest_row, length;
     ifs >> ignore >> ignore;
@@ -70,16 +60,16 @@ int main(int argc, char *argv[])
         testcases.push_back(testcase);
     }
 
+    int round = 1 << 21;
     //#pragma omp parallel for
     for (unsigned long i = 0; i < testcases.size(); ++i) {
-        mem.mem_clear(HEAP);
-        mem.mem_clear(GRID);
         TestCase_t testcase = testcases[i];
-        int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
-        //printf("%lu: %d\n", i, shortestlength);
+        int shortestlength;
+        for (int j = 0; j < round; ++j)
+            shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
         if (shortestlength != testcase.length){
             printf("fail\n");
-            exit(1);
+            //exit(1);
         }
     }
 
@@ -122,8 +112,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 
 	Heap openlist;
 
-	//struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
-    struct Grid *start_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+	struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
 	start_ptr->id = start_id;
 	start_ptr->cost = 0;
 	start_ptr->prev_length = 0;
@@ -152,8 +141,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			shortestlength = openlist.top()->prev_length;
 			while (openlist.size() != 0)
 			{
-				//free(openlist.top());
-                mem.mem_free(openlist.top());
+				free(openlist.top());
 #ifdef _BENCHMARK
                 //pop_cnt++;
                 ull t0 = rdtsc();
@@ -166,8 +154,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			break;
 		}
 		int current_length = openlist.top()->prev_length;
-		//free(openlist.top());
-        mem.mem_free(openlist.top());
+		free(openlist.top());
 #ifdef _BENCHMARK
         //pop_cnt++;
         ull t0 = rdtsc();
@@ -189,8 +176,7 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
     {
         if (closed[connectptr[iter]] != 1)
         {
-            // struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
-            struct Grid *grid_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+            struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
             int manh_dis = abs(connectptr[iter] / cols - dest_row) + abs(connectptr[iter] % cols - dest_col);
             grid_ptr->id = connectptr[iter];
             grid_ptr->prev_length = current_length + 1;

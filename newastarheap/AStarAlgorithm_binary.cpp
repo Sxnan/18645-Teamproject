@@ -2,7 +2,6 @@
 #include "map.h" 
 #include "heap.h"
 #include "utils.hpp"
-#include "mem_manager.h"
 #include <iostream>
 #include <fstream>
 #include <queue>
@@ -43,15 +42,11 @@ typedef struct TestCase {
     int length;
 } TestCase_t;
 
-DoubleMemManager mem(sizeof(Grid_t), 4096 / sizeof(Grid_t) + 1, sizeof(Grid_t *), 4096 / sizeof(Grid_t *) - 1);
-
 int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row);
 void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row);
 
 int main(int argc, char *argv[])
 {
-    mem.mem_clear(HEAP);
-    mem.mem_clear(GRID);
 	Map map("./maze512-1-0");
     vector<TestCase_t> testcases;
 
@@ -72,8 +67,6 @@ int main(int argc, char *argv[])
 
     //#pragma omp parallel for
     for (unsigned long i = 0; i < testcases.size(); ++i) {
-        mem.mem_clear(HEAP);
-        mem.mem_clear(GRID);
         TestCase_t testcase = testcases[i];
         int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
         //printf("%lu: %d\n", i, shortestlength);
@@ -89,7 +82,7 @@ int main(int argc, char *argv[])
 
     size_t push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 6;
     size_t push_store = up_swap_cnt * 2 + push_cnt * 1;
-    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 16;
+    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cnt * 4;
     size_t pop_store = down_swap_cnt * 2 + pop_cnt * 1;
     //cout << "Push Load: " << push_load << endl;
     //cout << "Push Store: " << push_store << endl;
@@ -122,8 +115,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 
 	Heap openlist;
 
-	//struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
-    struct Grid *start_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+	struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
 	start_ptr->id = start_id;
 	start_ptr->cost = 0;
 	start_ptr->prev_length = 0;
@@ -152,8 +144,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			shortestlength = openlist.top()->prev_length;
 			while (openlist.size() != 0)
 			{
-				//free(openlist.top());
-                mem.mem_free(openlist.top());
+				free(openlist.top());
 #ifdef _BENCHMARK
                 //pop_cnt++;
                 ull t0 = rdtsc();
@@ -166,8 +157,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			break;
 		}
 		int current_length = openlist.top()->prev_length;
-		//free(openlist.top());
-        mem.mem_free(openlist.top());
+		free(openlist.top());
 #ifdef _BENCHMARK
         //pop_cnt++;
         ull t0 = rdtsc();
@@ -189,8 +179,7 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
     {
         if (closed[connectptr[iter]] != 1)
         {
-            // struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
-            struct Grid *grid_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+            struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
             int manh_dis = abs(connectptr[iter] / cols - dest_row) + abs(connectptr[iter] % cols - dest_col);
             grid_ptr->id = connectptr[iter];
             grid_ptr->prev_length = current_length + 1;

@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <vector>
 using namespace std;
 constexpr int MAX = 512 * 512 + 1;
 constexpr int CONNECTMAX = MAX * 4;

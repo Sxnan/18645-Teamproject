@@ -1,4 +1,18 @@
+#include <stdio.h>
 #include "heap.h"
+
+size_t up_swap_cnt = 0, down_swap_cnt = 0;
+size_t push_cnt = 0, pop_cnt = 0;
+size_t h_up_loop_cnt = 0, h_down_loop_cnt = 0;
+size_t find_cnt = 0;
+
+void swap(struct Grid **p1, struct Grid **p2)
+{
+    auto t = *p1;
+    *p1 = *p2;
+    *p2 = t;
+    return;
+}
 
 Heap::Heap(void)
 {
@@ -13,6 +27,7 @@ int Heap::size()
 //void Heap::push(int newdata)
 void Heap::push(struct Grid *newgridptr)
 {
+    push_cnt++;
     //data[++heapsize] = newdata;
     ptr[++heapsize] = newgridptr;
     heapify_up();
@@ -24,12 +39,16 @@ void Heap::heapify_up() {
     //while(data[now] <= data[now/2] && now != 1)
     while(now != 1 && ptr[now]->cost <= ptr[now/2]->cost)
     {
+        //printf("here\n");
         // int t = data[now];
         // data[now] = data[now/2];
         // data[now/2] = t;
-        auto t = ptr[now];
-        ptr[now] = ptr[now/2];
-        ptr[now / 2] = t;
+        h_up_loop_cnt++;
+        up_swap_cnt++;
+        swap(ptr + now, ptr + now / 2);
+        //auto t = ptr[now];
+        //ptr[now] = ptr[now/2];
+        //ptr[now / 2] = t;
         now = now / 2;
     }
     return;
@@ -38,6 +57,7 @@ void Heap::heapify_up() {
 //int Heap::pop()
 void Heap::pop()
 {
+    pop_cnt++;
     //if(heapsize == 0) return -1;
     // int root = data[1];
     // data[1] = data[heapsize--];
@@ -53,6 +73,7 @@ void Heap::heapify_down() {
         child = 2 * father;
         //if(child + 1 <= heapsize && data[child+1] < data[child]) child++;
         if(child + 1 <= heapsize && ptr[child+1]->cost < ptr[child]->cost) child++;
+        find_cnt++;
         // if(data[father] > data[child])
         // {
         //     int t = data[father];
@@ -63,10 +84,8 @@ void Heap::heapify_down() {
         // }
         if(ptr[father]->cost > ptr[child]->cost)
         {
-            auto t = ptr[father];
-            ptr[father] = ptr[child];
-            ptr[child] = t;
-            father = child;
+            down_swap_cnt++;
+            swap(ptr + father, ptr + child);
         }
         else break;
     }
