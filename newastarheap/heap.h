@@ -5,8 +5,8 @@ class Heap
 {
 private:
     //int data[MAXHEAPSIZE];
-    //Grid_t *ptr[MAXHEAPSIZE];
-    Grid_t **ptr;
+    Grid_t *ptr[MAXHEAPSIZE];
+    //Grid_t **ptr;
     int heapsize;
     void heapify_up();
     void heapify_down();

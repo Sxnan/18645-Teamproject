@@ -87,9 +87,9 @@ int main(int argc, char *argv[])
     printf("pop cnt: %lu pop clock %llu\n", pop_cnt, pop_clk);
     printf("push cnt: %lu push clock %llu\n", push_cnt, push_clk);
 
-    size_t push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 6;
+    size_t push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 4;
     size_t push_store = up_swap_cnt * 2 + push_cnt * 1;
-    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 6 + find_cond1_cnt * 2 + find_cond2_cnt * 2;
+    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 4 + find_cond1_cnt * 2 + find_cond2_cnt * 2;
     size_t pop_store = down_swap_cnt * 2 + pop_cnt * 1;
     //cout << "Push Load: " << push_load << endl;
     //cout << "Push Store: " << push_store << endl;
@@ -122,8 +122,8 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 
 	Heap openlist;
 
-	//struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
-    struct Grid *start_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+	struct Grid *start_ptr = (struct Grid *) malloc(sizeof(struct Grid));
+    //struct Grid *start_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
 	start_ptr->id = start_id;
 	start_ptr->cost = 0;
 	start_ptr->prev_length = 0;
@@ -152,8 +152,8 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			shortestlength = openlist.top()->prev_length;
 			while (openlist.size() != 0)
 			{
-				//free(openlist.top());
-                mem.mem_free(openlist.top());
+				free(openlist.top());
+                //mem.mem_free(openlist.top());
 #ifdef _BENCHMARK
                 //pop_cnt++;
                 ull t0 = rdtsc();
@@ -166,8 +166,8 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 			break;
 		}
 		int current_length = openlist.top()->prev_length;
-		//free(openlist.top());
-        mem.mem_free(openlist.top());
+		free(openlist.top());
+        //mem.mem_free(openlist.top());
 #ifdef _BENCHMARK
         //pop_cnt++;
         ull t0 = rdtsc();
@@ -189,8 +189,8 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
     {
         if (closed[connectptr[iter]] != 1)
         {
-            // struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
-            struct Grid *grid_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
+            struct Grid *grid_ptr = (struct Grid *)malloc(sizeof(struct Grid));
+            //struct Grid *grid_ptr = (struct Grid *)mem.mem_alloc(GRID, 1);
             int manh_dis = abs(connectptr[iter] / cols - dest_row) + abs(connectptr[iter] % cols - dest_col);
             grid_ptr->id = connectptr[iter];
             grid_ptr->prev_length = current_length + 1;

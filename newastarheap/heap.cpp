@@ -27,7 +27,7 @@ void swap(struct Grid **p1, struct Grid **p2)
 Heap::Heap(void)
 {
     heapsize = 0;
-    ptr = (Grid_t **)mem.mem_alloc(HEAP, 300);
+    //ptr = (Grid_t **)mem.mem_alloc(HEAP, 300);
 }
 
 int Heap::size()
