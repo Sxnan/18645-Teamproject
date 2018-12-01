@@ -5,12 +5,13 @@ class Heap
 {
 private:
     //int data[MAXHEAPSIZE];
-    //Grid_t *ptr[MAXHEAPSIZE];
-    Grid_t **ptr;
+    Grid_t *ptr[MAXHEAPSIZE];
+    //Grid_t **ptr;
     int heapsize;
     void heapify_up();
     void heapify_down();
     int child_node_num = 8;
+    int offset = 6;
     int find_min_child(int child);
 
 public:
