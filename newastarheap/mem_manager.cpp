@@ -98,6 +98,13 @@ void MemManager::print_mem_stack(void)
     mem_stack.print();
 }
 
+void MemManager::mem_clear(void)
+{
+    mem_stack.clear();
+    for (int i = ele_num - 1; i >= 0; i--)
+        mem_stack.push(i);
+}
+
 /***********************************************************/
 
 DoubleMemManager::DoubleMemManager(int usize_0, int element_num_0, int usize_1, int element_num_1)
@@ -117,7 +124,7 @@ DoubleMemManager::DoubleMemManager(int usize_0, int element_num_0, int usize_1, 
     return;
 }
 
-void * DoubleMemManager::mem_alloc(int type, int element_num)   // TODO: Not continuous
+void * DoubleMemManager::mem_alloc(int type, int element_num)   // TODO: May not be continuous
 {
     int first_empty_element = mem_stack[type].pop();
     for (int i = 1; i < element_num; i++)

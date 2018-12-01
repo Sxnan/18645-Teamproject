@@ -39,6 +39,7 @@ public:
     void mem_free(void *ptr);
     ~MemManager(void);
     void print_mem_stack(void);
+    void mem_clear(void);
 };
 
 class DoubleMemManager
