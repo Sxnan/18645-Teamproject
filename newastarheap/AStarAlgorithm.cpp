@@ -17,7 +17,7 @@
 #define _BENCHMARK_LOAD_PER_POP
 #define _BENCHMARK_STORE_PER_POP
 
-#define _BENCHMARK
+//#define _BENCHMARK
 
 extern size_t up_swap_cnt, down_swap_cnt;
 extern size_t push_cnt, pop_cnt;
@@ -26,6 +26,8 @@ extern size_t find_cnt;
 extern size_t find_min_switch_cnt;
 
 typedef unsigned long long ull;
+
+size_t nodenum = 0;
 
 using namespace std;
 constexpr int SIZE = 512;
@@ -44,7 +46,6 @@ typedef struct TestCase {
     int length;
 } TestCase_t;
 
-//DoubleMemManager mem(sizeof(Grid_t), 4096 / sizeof(Grid_t) + 1, sizeof(Grid_t *), 4096 / sizeof(Grid_t *) - 1);
 MemManager grid_mem(sizeof(Grid_t), 4096 / sizeof(Grid_t) + 1);
 
 int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row);
@@ -52,8 +53,7 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
 
 int main(int argc, char *argv[])
 {
-    //mem.mem_clear(HEAP);
-    //mem.mem_clear(GRID);
+    ofstream fout("./final_cycle_vs_node");
     grid_mem.mem_clear();
 	Map map("./maze512-1-0");
     vector<TestCase_t> testcases;
@@ -75,16 +75,24 @@ int main(int argc, char *argv[])
 
     //#pragma omp parallel for
     for (unsigned long i = 0; i < testcases.size(); ++i) {
-        //mem.mem_clear(HEAP);
-        //mem.mem_clear(GRID);
-        grid_mem.mem_clear();
-        TestCase_t testcase = testcases[i];
-        int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
-        //printf("%lu: %d\n", i, shortestlength);
-        if (shortestlength != testcase.length){
-            printf("fail\n");
-            exit(1);
+    //for (unsigned long i = 0; i < 10; ++i) {
+        ull totalcycle = 0;
+        for (int run = 0; run < 10; run++)
+        {
+            nodenum = 0;
+            ull st;
+            grid_mem.mem_clear();
+            TestCase_t testcase = testcases[i];
+            st = rdtsc();
+            int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
+            totalcycle += (rdtsc() - st);
+            //printf("%lu: %d\n", i, shortestlength);
+            if (shortestlength != testcase.length){
+                printf("fail\n");
+                exit(1);
+            }
         }
+        fout << nodenum << ", " << totalcycle / 10 << endl;
     }
 
 #ifdef _BENCHMARK
@@ -144,6 +152,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 
 	while (true)
 	{
+        nodenum++;
 		if (openlist.size() == 0)
 		{
 			cout << "Empty openlist! " << endl;

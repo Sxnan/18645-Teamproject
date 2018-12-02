@@ -11,11 +11,11 @@
 // int h_down = 0, h_down_loop = 0, h_down_cond = 0, h_down_swap = 0;
 // int find_min = 0, find_min_loop = 0, find_min_cond_1 = 0, find_min_cond_2 = 0;
 
-size_t up_swap_cnt = 0, down_swap_cnt = 0;
-size_t push_cnt = 0, pop_cnt = 0;
-size_t h_up_loop_cnt = 0, h_down_loop_cnt = 0;
-size_t find_cnt = 0;
-size_t find_min_switch_cnt = 0;
+// size_t up_swap_cnt = 0, down_swap_cnt = 0;
+// size_t push_cnt = 0, pop_cnt = 0;
+// size_t h_up_loop_cnt = 0, h_down_loop_cnt = 0;
+// size_t find_cnt = 0;
+// size_t find_min_switch_cnt = 0;
 
 void swap(struct Grid **p1, struct Grid **p2)
 {
@@ -39,7 +39,7 @@ int Heap::size()
 //void Heap::push(int newdata)
 void Heap::push(struct Grid *newgridptr)
 {
-    push_cnt++;
+    //push_cnt++;
     //data[++heapsize] = newdata;
     ptr[++heapsize] = newgridptr;
     heapify_up();
@@ -51,7 +51,7 @@ void Heap::heapify_up() {
     //while(data[now] <= data[now/2] && now != 1)
     while(now != 1)
     {
-        h_up_loop_cnt++;
+        //h_up_loop_cnt++;
         struct Grid **now_dptr = &ptr[now];
         struct Grid **up_dptr = &ptr[(now + child_node_num - 2) / child_node_num];
         struct Grid *now_ptr = *now_dptr;
@@ -60,7 +60,7 @@ void Heap::heapify_up() {
         int up_cost = up_ptr->cost;
         if(now_cost <= up_cost)
         {
-            up_swap_cnt++;
+            //up_swap_cnt++;
             swap(now_dptr, up_dptr);
             now = (now + child_node_num - 2) / child_node_num;
         }
@@ -72,7 +72,7 @@ void Heap::heapify_up() {
 //int Heap::pop()
 void Heap::pop()
 {
-    pop_cnt++;
+    //pop_cnt++;
     //if(heapsize == 0) return -1;
     // int root = data[1];
     // data[1] = data[heapsize--];
@@ -83,7 +83,7 @@ void Heap::pop()
 
 int Heap::find_min_child(int child)
 {
-    find_cnt++;
+    //ind_cnt++;
     int min_child = __INT_MAX__, min_child_id;
 
     struct Grid *c0, *c1, *c2, *c3, *c4, *c5, *c6, *c7;
@@ -99,7 +99,7 @@ int Heap::find_min_child(int child)
     c7 = ptr[child + 7];
 
     int tmp = heapsize - child > 7 ? 7: heapsize - child;
-    find_min_switch_cnt += tmp + 1;
+    //find_min_switch_cnt += tmp + 1;
 
     switch(tmp) {
         case 7:
@@ -152,7 +152,7 @@ void Heap::heapify_down() {
     int father = 1, child;
     while(father * child_node_num - (child_node_num - 2) <= heapsize)
     {
-        h_down_loop_cnt++;
+        //h_down_loop_cnt++;
         child = father * child_node_num - (child_node_num - 2);
         child += find_min_child(child);
         struct Grid **father_dptr = &ptr[father];
@@ -166,7 +166,7 @@ void Heap::heapify_down() {
             // auto t = ptr[father];
             // ptr[father] = ptr[child];
             // ptr[child] = t;
-            down_swap_cnt++;
+            //down_swap_cnt++;
             swap(father_dptr, child_dptr);
             father = child;
         }

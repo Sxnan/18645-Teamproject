@@ -11,7 +11,7 @@
 #include <vector>
 #include <omp.h>
 
-#define _BENCHMARK
+//#define _BENCHMARK
 
 extern size_t up_swap_cnt, down_swap_cnt;
 extern size_t push_cnt, pop_cnt;
