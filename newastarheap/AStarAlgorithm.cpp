@@ -32,6 +32,7 @@ constexpr int SIZE = 512;
 
 ull pop_clk = 0;
 ull push_clk = 0;
+size_t nodenumber = 0;
 
 #define abs(x) ((x)>=0?(x):-(x))
 #define max(x, y) ((x)>(y)?(x):(y))
@@ -52,6 +53,7 @@ void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *clos
 
 int main(int argc, char *argv[])
 {
+    ofstream fout("final_thru_vs_node");
     //mem.mem_clear(HEAP);
     //mem.mem_clear(GRID);
     grid_mem.mem_clear();
@@ -75,38 +77,51 @@ int main(int argc, char *argv[])
 
     //#pragma omp parallel for
     for (unsigned long i = 0; i < testcases.size(); ++i) {
+    //for (unsigned long i = 0; i < 10; ++i) {
+        pop_clk = 0;
+        push_clk = 0;
+        size_t push_load = 0;
+        size_t push_store = 0;
+        size_t pop_load = 0;
+        size_t pop_store = 0;
         //mem.mem_clear(HEAP);
         //mem.mem_clear(GRID);
-        grid_mem.mem_clear();
-        TestCase_t testcase = testcases[i];
-        int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
-        //printf("%lu: %d\n", i, shortestlength);
-        if (shortestlength != testcase.length){
-            printf("fail\n");
-            exit(1);
+        for (int run = 0; run < 10; run++)
+        {
+            grid_mem.mem_clear();
+            TestCase_t testcase = testcases[i];
+            int shortestlength = astar(map, testcase.start_col, testcase.start_row, testcase.dest_col, testcase.dest_row);
+            //printf("%lu: %d\n", i, shortestlength);
+            if (shortestlength != testcase.length){
+                printf("fail\n");
+                exit(1);
+            }
         }
-    }
-
 #ifdef _BENCHMARK
-    printf("pop cnt: %lu pop clock %llu\n", pop_cnt, pop_clk);
-    printf("push cnt: %lu push clock %llu\n", push_cnt, push_clk);
+        // printf("pop cnt: %lu pop clock %llu\n", pop_cnt, pop_clk);
+        // printf("push cnt: %lu push clock %llu\n", push_cnt, push_clk);
 
-    size_t push_load = up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 4;
-    size_t push_store = up_swap_cnt * 2 + push_cnt * 1;
-    size_t pop_load = down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 4 + find_cnt * 8 + find_min_switch_cnt;
-    size_t pop_store = down_swap_cnt * 2 + pop_cnt * 1;
-    //cout << "Push Load: " << push_load << endl;
-    //cout << "Push Store: " << push_store << endl;
-    //cout << "Pop Load: " << pop_load << endl;
-    //cout << "Pop Store: " << pop_store << endl;
-    double ld_thru = (double)(push_load + pop_load) / (double)(push_clk+pop_clk);
-    double st_thru = (double)(push_store + pop_store) / (double)(push_clk+pop_clk);
+        push_load += up_swap_cnt * 2 + push_cnt * 0 + h_up_loop_cnt * 4;
+        push_store += up_swap_cnt * 2 + push_cnt * 1;
+        pop_load += down_swap_cnt * 2 + pop_cnt * 1 + h_down_loop_cnt * 4 + find_cnt * 8 + find_min_switch_cnt;
+        pop_store += down_swap_cnt * 2 + pop_cnt * 1;
 
-    cout << "Load Throughput: " << ld_thru << endl;
-    cout << "Store Throughput: " << st_thru << endl;
+        fout << nodenumber << ", " << (double)(push_load + pop_load) / (double)(push_clk+pop_clk) / 10.0 << endl;
+        
+        // //cout << "Push Load: " << push_load << endl;
+        // //cout << "Push Store: " << push_store << endl;
+        // //cout << "Pop Load: " << pop_load << endl;
+        // //cout << "Pop Store: " << pop_store << endl;
+        // double ld_thru = (double)(push_load + pop_load) / (double)(push_clk+pop_clk);
+        // double st_thru = (double)(push_store + pop_store) / (double)(push_clk+pop_clk);
+
+        // cout << "Load Throughput: " << ld_thru << endl;
+        // cout << "Store Throughput: " << st_thru << endl;
+
 #endif
-
-
+        if (i % 500 == 0)
+            cout << i << " in " << testcases.size() << endl;
+    }
 	return 0;
 }
 
@@ -192,6 +207,7 @@ int astar(Map &map, int start_col, int start_row, int dest_col, int dest_row) {
 }
 
 void expand(Map *map, int current_id, int *indexptr, int *connectptr, bool *closed, int current_length, Heap *openlist, int cols, int dest_col, int dest_row) {
+    nodenumber++;
     for (int iter = indexptr[current_id]; iter < indexptr[current_id + 1]; ++iter) //TODO: SIMD
     {
         if (closed[connectptr[iter]] != 1)
