@@ -93,6 +93,8 @@ int main(int argc, char *argv[])
             }
         }
         fout << nodenum << ", " << totalcycle / 10 << endl;
+        if (i % 500 == 0)
+            cout << i << " in " << testcases.size() << endl;
     }
 
 #ifdef _BENCHMARK
