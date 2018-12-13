@@ -116,7 +116,7 @@ int *Map::GetConnectAddr(void)
 	return connect;
 }
 
-int Map::RecordPath(int previd, int currid)
+void Map::RecordPath(int previd, int currid)
 {
 	path[currid] = previd;
 }

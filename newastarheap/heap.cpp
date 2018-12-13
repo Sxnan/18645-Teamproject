@@ -3,14 +3,6 @@
 #include <immintrin.h> 
 #include "mem_manager.h"
 
-//extern DoubleMemManager mem;
-
-//int upcounter = 0, upcounteradd = 0, downcounter = 0, upswap = 0, downswap = 0, findminloop = 0, if_1 = 0, if_2 = 0;
-
-// int h_up = 0, h_up_loop = 0, h_up_loop_plus = 0, h_up_swap = 0;
-// int h_down = 0, h_down_loop = 0, h_down_cond = 0, h_down_swap = 0;
-// int find_min = 0, find_min_loop = 0, find_min_cond_1 = 0, find_min_cond_2 = 0;
-
 size_t up_swap_cnt = 0, down_swap_cnt = 0;
 size_t push_cnt = 0, pop_cnt = 0;
 size_t h_up_loop_cnt = 0, h_down_loop_cnt = 0;
@@ -28,7 +20,6 @@ void swap(struct Grid **p1, struct Grid **p2)
 Heap::Heap(void)
 {
     heapsize = 0;
-    //ptr = (Grid_t **)mem.mem_alloc(HEAP, MAXHEAPSIZE);
 }
 
 int Heap::size()
@@ -36,11 +27,9 @@ int Heap::size()
     return heapsize;
 }
 
-//void Heap::push(int newdata)
 void Heap::push(struct Grid *newgridptr)
 {
     push_cnt++;
-    //data[++heapsize] = newdata;
     ptr[++heapsize] = newgridptr;
     heapify_up();
     return;
@@ -48,7 +37,6 @@ void Heap::push(struct Grid *newgridptr)
 
 void Heap::heapify_up() {
     int now = heapsize;
-    //while(data[now] <= data[now/2] && now != 1)
     while(now != 1)
     {
         h_up_loop_cnt++;
@@ -69,13 +57,9 @@ void Heap::heapify_up() {
     return;
 }
 
-//int Heap::pop()
 void Heap::pop()
 {
     pop_cnt++;
-    //if(heapsize == 0) return -1;
-    // int root = data[1];
-    // data[1] = data[heapsize--];
     ptr[1] = ptr[heapsize--];
     heapify_down();
     return;
@@ -135,16 +119,6 @@ int Heap::find_min_child(int child)
         if(child <= heapsize) { min_child = cost0; min_child_id = 0; }
     }
 
-    
-    //if(child <= heapsize) { min_child = cost0; min_child_id = 0; }
-    //if(child <= heapsize && cost1 < min_child) { min_child = cost1; min_child_id = 1; }
-    //if(child <= heapsize && cost2 < min_child) { min_child = cost2; min_child_id = 2; }
-    //if(child <= heapsize && cost3 < min_child) { min_child = cost3; min_child_id = 3; }
-    //if(child <= heapsize && cost4 < min_child) { min_child = cost4; min_child_id = 4; }
-    //if(child <= heapsize && cost5 < min_child) { min_child = cost5; min_child_id = 5; }
-    //if(child <= heapsize && cost6 < min_child) { min_child = cost6; min_child_id = 6; }
-    //if(child <= heapsize && cost7< min_child) { min_child = cost7; min_child_id = 7; }
-
     return min_child_id;
 }
 
@@ -163,9 +137,6 @@ void Heap::heapify_down() {
         int child_cost = child_ptr->cost;
         if(father_cost > child_cost)
         {
-            // auto t = ptr[father];
-            // ptr[father] = ptr[child];
-            // ptr[child] = t;
             down_swap_cnt++;
             swap(father_dptr, child_dptr);
             father = child;
@@ -179,8 +150,3 @@ struct Grid * Heap::top(void)
 {
     return ptr[1];
 }
-
-// Heap::~Heap(void)
-// {
-//     //mem.mem_clear(HEAP);
-// }
