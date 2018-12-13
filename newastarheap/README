@@ -1,0 +1,12 @@
+18645 Team Project: A* Pathfinding Optimization
+
+`make` to compile
+
+`./astar` will run the A* pathfinding on maze512-1-0 for all the test case in maze512.map.scen (this may take 1 minutes). And it will output the load throughput
+
+---
+grid.h: a simple grid structure represent a point in the graph
+heap.h heap.cpp: heap used in A* as a priority queue
+map.h map.cpp: load the map and convert graph into CSR format
+mem_manager.h mem_manager.cpp: use to allocate a continuous memory for grids
+utils.hpp: all the helper function for benchmarking
